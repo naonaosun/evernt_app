@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>イベント登録</title>
+</head>
+<body>
+    <h1>イベント登録ページ</h1>
+    <form method="POST">
+        <label for="title">タイトル:</label>
+        <input type="text" name="title" required><br><br>
+
+        <label for="date">日時 (例: 2024-08-30 12:00:00):</label>
+        <input type="text" name="date" required><br><br>
+
+        <label for="url">URL:</label>
+        <input type="text" name="url"><br><br>
+
+        <button type="submit">登録</button>
+    </form>
+
+    <h2>登録されたイベント</h2>
+    <ul>
+        {% for event in events %}
+            <li>
+                {{ event.title }} - {{ event.date }}
+                {% if event.url %}
+                    - <a href="{{ event.url }}" target="_blank">{{ event.url }}</a>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

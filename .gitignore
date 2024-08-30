@@ -1,0 +1,3 @@
+.venv
+.env
+events.db
