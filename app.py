@@ -46,9 +46,15 @@ def create_events():
         # データベースに新しいイベントを保存
         Event.create(name=name, date=date, place=place, address=address, url=url)
 
-        return redirect(url_for("index"))
+        return redirect(url_for("created_events"))
 
     return render_template("create_events.html")
+
+
+# 登録完了ページのルート
+@app.route("/events_2")
+def created_events():
+    return render_template("created_events.html")
 
 
 if __name__ == "__main__":
