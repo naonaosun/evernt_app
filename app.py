@@ -57,5 +57,13 @@ def created_events():
     return render_template("created_events.html")
 
 
+# イベント詳細ページのルート
+@app.route("/event/<int:event_id>")
+def event_detail(event_id):
+    # イベントIDに基づいてイベントを取得
+    event = Event.get(Event.id == event_id)
+    return render_template("event_detail.html", event=event)
+
+
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=8000, debug=True)
