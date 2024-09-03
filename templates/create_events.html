@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>イベント登録</title>
+</head>
+<body>
+    <h1>イベント登録</h1>
+    <!-- フォームの作成 -->
+    <form method="POST" action="/events">
+        <label for="name">イベント名:</label>
+        <input type="text" id="name" name="name" required><br><br>
+        
+        <label for="date">日時:</label>
+        <input type="datetime-local" id="date" name="date" required><br><br>
+
+        <label for="place">場所:</label>
+        <input type="text" id="place" name="place" required><br><br>
+        
+        <label for="address">住所:</label>
+        <input type="text" id="address" name="address" required><br><br>
+
+        <!-- URL入力フィールドを追加 -->
+        <label for="url">URL:</label>
+        <input type="url" id="url" name="url"><br><br>
+        
+        <input type="submit" value="登録">
+    </form>
+    <br>
+    <a href="{{ url_for('index') }}">イベント一覧を見る</a>
+</body>
+</html>
+
+    
