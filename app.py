@@ -1,46 +1,50 @@
-from flask import Flask, request, render_template, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for
 from peewee import SqliteDatabase, Model, CharField, DateTimeField
-from datetime import datetime
 
-# データベースの設定
-db = SqliteDatabase("db.sqlite")
+# Flaskアプリケーションのインスタンスを作成
+app = Flask(__name__)
 
-# モデルの定義
+# SQLiteデータベースの設定
+db = SqliteDatabase("events.db")
+
+
+# データベースモデルの定義
 class Event(Model):
-    title = CharField()
+    name = CharField()
     date = DateTimeField()
-    url = CharField(null=True)  # URL フィールドを追加
+    place = CharField()
+    address = CharField()
+    url = CharField(null=True)
 
     class Meta:
         database = db
-        table_name = "events"
 
-# # データベーステーブルを作成
-# db.connect()
-# db.create_tables([Event])
 
-# # Flask アプリケーションの設定
-# app = Flask(__name__)
+# データベースの初期化
+db.connect()
+db.create_tables([Event], safe=True)  # 'safe=True'で既に存在するテーブルを上書きしない
 
-# @app.route('/', methods=['GET', 'POST'])
-# def index():
-#     if request.method == 'POST':
-#         title = request.form['title']
-#         date = request.form['date']
-#         url = request.form['url']
 
-#         # 入力データをモデルに保存
-#         Event.create(
-#             title=title,
-#             date=datetime.strptime(date, '%Y-%m-%d %H:%M:%S'),
-#             url=url
-#         )
 
-#         return redirect(url_for('index'))
+@app.route("/", methods=["GET", "POST"])
+def index():
+    if request.method == "POST":
+        # フォームから送信されたデータを取得
+        name = request.form["name"]
+        date = request.form["date"]
+        place = request.form["place"]
+        address = request.form["address"]
+        url = request.form.get('url', '')
 
-#     # 登録されたイベントを取得して表示
-#     events = Event.select()
-#     return render_template('index.html', events=events)
+        # データベースに新しいイベントを保存
+        Event.create(name=name, date=date, place=place, address=address, url=url)
 
-# if __name__ == '__main__':
-#     app.run(debug=True)
+        return redirect(url_for("index"))
+
+    # データベースからすべてのイベントを取得
+    events = Event.select()
+    return render_template("index.html", events=events)
+
+
+if __name__ == "__main__":
+    app.run(host="127.0.0.1", port=8000, debug=True)
