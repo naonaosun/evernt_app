@@ -10,7 +10,11 @@
     <ul>
         {% for event in events %}
             <li>
-                {{ event.name }} - {{ event.date }} - {{ event.place }} - {{ event.address }} 
+                <!-- イベント名をクリック可能なリンクに変更 -->
+                <a href="{{ url_for('event_detail', event_id=event.id) }}">{{ event.name }}</a>  
+                - {{ event.date }} 
+                - {{ event.place }} 
+                - {{ event.address }} 
                 {% if event.url %}
                 - <a href="{{ event.url }}" target="_blank">リンク</a>
                 {% endif %}
