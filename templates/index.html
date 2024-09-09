@@ -1,27 +1,39 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>イベント一覧</title>
 </head>
+
 <body>
+    {% for message in get_flashed_messages() %}
+        <p>{{ message }}</p>
+    {% endfor %}
+
+    {% if current_user.is_authenticated %}
+        <p>{{ current_user.name }} さんこんにちは</p>
+    {% else %}
+        <p>ログインしていません</p>
+    {% endif %}
+
     <h2>イベント一覧</h2>
     <ul>
         {% for event in events %}
-            <li>
-                <!-- イベント名をクリック可能なリンクに変更 -->
-                <a href="{{ url_for('event_detail', event_id=event.id) }}">{{ event.name }}</a>  
-                - {{ event.date }} 
-                - {{ event.place }} 
-                - {{ event.address }} 
-                {% if event.url %}
-                - <a href="{{ event.url }}" target="_blank">リンク</a>
-                {% endif %}
-            </li>
+        <li>
+            <!-- イベント名をクリック可能なリンクに変更 -->
+            <a href="{{ url_for('event_detail', event_id=event.id) }}">{{ event.name }}</a>
+            - {{ event.date }}
+            - {{ event.place }}
+            - {{ event.address }}
+            {% if event.url %}
+            - <a href="{{ event.url }}" target="_blank">リンク</a>
+            {% endif %}
+        </li>
         {% endfor %}
     </ul>
     <a href="{{ url_for('create_events') }}">イベントを登録する</a>
 </body>
-</html>
 
+</html>
