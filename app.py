@@ -24,6 +24,7 @@ def load_user(user_id):
 # ログインしていないとアクセスできないページにアクセスがあった場合の処理
 @login_manager.unauthorized_handler
 def unauthorized_handler():
+    flash("ログインすると投稿ができます。")
     return redirect(url_for("user_bp.login"))   # ★blueprint名を指定(loginのルートをblueprintで定義しているため)
 
 # user.pyに分割したBlueprintの登録
