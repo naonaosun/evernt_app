@@ -16,16 +16,21 @@ app.secret_key = "secret"
 login_manager = LoginManager()
 login_manager.init_app(app)
 
+
 # Flask-Loginがユーザー情報を取得するためのメソッド
 @login_manager.user_loader
 def load_user(user_id):
     return User.get_by_id(user_id)
 
+
 # ログインしていないとアクセスできないページにアクセスがあった場合の処理
 @login_manager.unauthorized_handler
 def unauthorized_handler():
     flash("ログインすると投稿ができます。")
-    return redirect(url_for("user_bp.login"))   # ★blueprint名を指定(loginのルートをblueprintで定義しているため)
+    return redirect(
+        url_for("user_bp.login")
+    )  # ★blueprint名を指定(loginのルートをblueprintで定義しているため)
+
 
 # user.pyに分割したBlueprintの登録
 app.register_blueprint(user.app, url_prefix="/user")
@@ -44,13 +49,14 @@ def index():  # データベースからすべてのイベントを取得
 def create_events():
     if request.method == "POST":  # フォームから送信されたデータを取得
         name = request.form["name"]
+        content = request.form["content"]
         date = request.form["date"]
         place = request.form["place"]
         address = request.form["address"]
         url = request.form.get("url", "")
 
         # データベースに新しいイベントを保存
-        Event.create(name=name, date=date, place=place, address=address, url=url)
+        Event.create(name=name, content=content, date=date, place=place, address=address, url=url)
         flash("イベントの登録が完了しました！")  # 登録完了メッセージをflash
         return redirect(url_for("index"))
 

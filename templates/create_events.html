@@ -11,6 +11,9 @@
     <form method="POST" action="{{ url_for('create_events') }}">
         <label for="name">イベント名:</label>
         <input type="text" id="name" name="name" required><br><br>
+
+        <label for="content">コメント:</label>
+        <input type="text" id="content" name="content" required><br><br>
         
         <label for="date">日時:</label>
         <input type="datetime-local" id="date" name="date" required><br><br>
