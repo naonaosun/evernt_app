@@ -10,10 +10,21 @@ from peewee import (
     ForeignKeyField,
     DateTimeField,
 )
+from playhouse.migrate import SqliteMigrator, migrate
 
 
 # SQLiteデータベースの設定
 db = SqliteDatabase("db.sqlite")
+db.connect()  # データベースに接続
+
+# マイグレーターの設定
+migrator = SqliteMigrator(db)
+
+# トランザクションを開始してマイグレーションを実行
+with db.atomic():
+    migrate(
+        migrator.add_column('events', 'content', TextField(null=True))  # 追加するフィールドを記載
+    )
 
 
 class User(UserMixin, Model):
@@ -29,6 +40,7 @@ class User(UserMixin, Model):
 
 class Event(Model):
     name = CharField()
+    content = TextField(null=True)
     date = DateTimeField()
     place = CharField()
     address = CharField()
@@ -54,3 +66,5 @@ class Event(Model):
 # データベースの初期化
 db.create_tables([Event, User])
 db.pragma("foreign_keys", 1, permanent=True)  # on_deleteを動作させるオプション設定
+
+
