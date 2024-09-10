@@ -17,15 +17,15 @@ from playhouse.migrate import SqliteMigrator, migrate
 db = SqliteDatabase("db.sqlite")
 db.connect()  # データベースに接続
 
-# # マイグレーターの設定
-# migrator = SqliteMigrator(db)
+# マイグレーターの設定
+migrator = SqliteMigrator(db)
 
-# # トランザクションを開始してマイグレーションを実行
-# with db.atomic():
-#     migrate(
-#         migrator.add_column('events', 'content', TextField(null=True))  # 追加するフィールドを記載
-#     )
-
+# トランザクションを開始してマイグレーションを実行
+with db.atomic():
+    migrate(
+        migrator.add_column('events', 'start_date', DateTimeField(null=True)),
+        migrator.add_column('events', 'end_date', DateTimeField(null=True))
+    )
 
 class User(UserMixin, Model):
     id = IntegerField(primary_key=True)
@@ -41,7 +41,8 @@ class User(UserMixin, Model):
 class Event(Model):
     name = CharField()
     content = TextField(null=True)
-    date = DateTimeField()
+    start_date = DateTimeField()
+    end_date = DateTimeField()
     place = CharField()
     address = CharField()
     url = CharField(null=True)
@@ -66,5 +67,3 @@ class Event(Model):
 # データベースの初期化
 db.create_tables([Event, User])
 db.pragma("foreign_keys", 1, permanent=True)  # on_deleteを動作させるオプション設定
-
-
