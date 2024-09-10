@@ -17,14 +17,14 @@ from playhouse.migrate import SqliteMigrator, migrate
 db = SqliteDatabase("db.sqlite")
 db.connect()  # データベースに接続
 
-# マイグレーターの設定
-migrator = SqliteMigrator(db)
+# # マイグレーターの設定
+# migrator = SqliteMigrator(db)
 
-# トランザクションを開始してマイグレーションを実行
-with db.atomic():
-    migrate(
-        migrator.add_column('events', 'content', TextField(null=True))  # 追加するフィールドを記載
-    )
+# # トランザクションを開始してマイグレーションを実行
+# with db.atomic():
+#     migrate(
+#         migrator.add_column('events', 'content', TextField(null=True))  # 追加するフィールドを記載
+#     )
 
 
 class User(UserMixin, Model):
