@@ -35,7 +35,8 @@
             <!-- イベント名をクリック可能なリンクに変更 -->
             <a href="{{ url_for('event_detail', event_id=event.id) }}">{{ event.name }}</a>
             - {{ event.content }}
-            - {{ event.date }}
+            - {{ event.start_date }}
+            - {{ event.end_date }}
             - {{ event.place }}
             - {{ event.address }}
             {% if event.url %}

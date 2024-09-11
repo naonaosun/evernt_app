@@ -50,13 +50,22 @@ def create_events():
     if request.method == "POST":  # フォームから送信されたデータを取得
         name = request.form["name"]
         content = request.form["content"]
-        date = request.form["date"]
+        start_date = request.form["start_date"]
+        end_date = request.form["end_date"]
         place = request.form["place"]
         address = request.form["address"]
         url = request.form.get("url", "")
 
-        # データベースに新しいイベントを保存
-        Event.create(name=name, content=content, date=date, place=place, address=address, url=url)
+        # データベースにイベントを保存
+        Event.create(
+            name=name,
+            content=content,
+            start_date=start_date,
+            end_date=end_date,
+            place=place,
+            address=address,
+            url=url,
+        )
         flash("イベントの登録が完了しました！")  # 登録完了メッセージをflash
         return redirect(url_for("index"))
 
