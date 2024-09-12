@@ -3,8 +3,9 @@ from flask_login import LoginManager, current_user, login_required, login_user, 
 from peewee import SqliteDatabase, Model, CharField, DateTimeField
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
-from config import Event, User
+from config import Event, User, EventImage
 import os
+from datetime import datetime
 from func import user  # user.pyからBlueprintをインポート
 
 
@@ -55,32 +56,44 @@ def create_events():
         place = request.form["place"]
         address = request.form["address"]
         url = request.form.get("url", "")
+        # ファイルのアップロード処理
+        if "image" in request.files:
+            file = request.files["image"]
+            if file and allowed_file(file.filename):
+                # ファイル名の安全性を確保
+                filename = secure_filename(file.filename)
+                file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
 
-        # データベースにイベントを保存
-        Event.create(
-            name=name,
-            content=content,
-            start_date=start_date,
-            end_date=end_date,
-            place=place,
-            address=address,
-            url=url,
-        )
-        flash("イベントの登録が完了しました！")  # 登録完了メッセージをflash
-        return redirect(url_for("index"))
+                # 画像ファイルを指定のディレクトリに保存
+                file.save(file_path)
+
+                # 各データベースにイベントを保存
+                event = Event.create(
+                    name=name,
+                    content=content,
+                    start_date=start_date,
+                    end_date=end_date,
+                    place=place,
+                    address=address,
+                    url=url,
+                )
+
+                EventImage.create(
+                    event=event, 
+                    user=current_user,  # ログイン中のユーザーを取得 
+                    image_path=file_path, 
+                    posted_deat=datetime.now()
+                )
+
+                flash("イベントの登録が完了しました！")  # 登録完了メッセージをflash
+                return redirect(url_for("index"))
+            else:
+                flash("画像のアップロードに失敗しました。対応する形式のファイルを選択してください。")
+                return redirect(request.url)
 
     return render_template("create_events.html")
 
 
-# イベント詳細ページのルート
-@app.route("/event/<int:event_id>")
-def event_detail(event_id):
-    # イベントIDに基づいてイベントを取得
-    event = Event.get(Event.id == event_id)
-    return render_template("event_detail.html", event=event)
-
-
-# 詳細ページに画像をアップロードする
 # アップロードされた画像を保存するディレクトリ
 UPLOAD_FOLDER = "static/uploads"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
@@ -94,33 +107,15 @@ def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@app.route("/upload_image/<int:event_id>", methods=["POST"])
-def upload_image(event_id):
-    # ファイルがリクエストに含まれているかを確認
-    if "image" not in request.files:
-        return redirect(request.url)
-
-    file = request.files["image"]
-
-    # ファイルが選択されていない場合の処理
-    if file.filename == "":
-        return redirect(request.url)
-
-    # ファイルが許可されたタイプであるかをチェック
-    if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
-        file.save(filepath)
-
-        # データベースのイベントレコードを更新して画像名を保存
-        event = Event.get(Event.id == event_id)
-        event.image = filename
-        event.save()
-
-        return redirect(url_for("event_detail", event_id=event_id))
-
-    return redirect(request.url)
+# イベント詳細ページのルート
+@app.route("/event/<int:event_id>")
+def event_detail(event_id):
+    # イベントIDに基づいてイベントを取得
+    event = Event.get(Event.id == event_id)
+    return render_template("event_detail.html", event=event)
 
 
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=8000, debug=True)
+
+

@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 from flask_login import UserMixin
 from peewee import (
     SqliteDatabase,
@@ -12,6 +12,7 @@ from peewee import (
     DateTimeField,
 )
 from playhouse.migrate import SqliteMigrator, migrate
+
 
 
 # SQLiteデータベースの設定
@@ -51,22 +52,32 @@ class Event(Model):
     image = CharField(null=True)  # 画像ファイル名を保存するフィールド
 
     def get_start_date(self):  # 日付を変換するメソッドを追加
-        return datetime.datetime.fromisoformat(self.start_date).strftime('%Y/%m/%d')
-
+        return datetime.datetime.fromisoformat(self.start_date).strftime("%Y/%m/%d")
 
     def get_end_date(self):  # 日付を変換するメソッドを追加
-        return datetime.datetime.fromisoformat(self.end_date).strftime('%Y/%m/%d')
-
+        return datetime.datetime.fromisoformat(self.end_date).strftime("%Y/%m/%d")
 
     class Meta:
         database = db
         table_name = "events"
 
-#★detaフィールドの削除★1～5を順を追って実行
+
+class EventImage(Model):
+    user = ForeignKeyField(User, backref="images", on_delete="CASCADE")
+    event = ForeignKeyField(Event, backref="images", on_delete="CASCADE")
+    posted_date = DateTimeField(default=datetime.now)
+    image_path = CharField()  # 画像ファイルのパスを保存するフィールド
+
+    class Meta:
+        database = db
+        table_name = "event_images"
+
+
+# ★detaフィールドの削除★1～5を順を追って実行
 ## 1. 一時テーブルを作成し、データをコピー
 # db.execute_sql('''
-#     CREATE TABLE IF NOT EXISTS events_backup AS SELECT 
-#     name, content, start_date, end_date, place, address, url, image 
+#     CREATE TABLE IF NOT EXISTS events_backup AS SELECT
+#     name, content, start_date, end_date, place, address, url, image
 #     FROM events;
 # ''')
 
@@ -84,10 +95,6 @@ class Event(Model):
 
 # # 5. 一時テーブルを削除
 # db.execute_sql('DROP TABLE events_backup;')
-
-
-
-
 
 
 # def save(self, *args, **kwargs):
@@ -110,5 +117,5 @@ class Event(Model):
 
 
 # データベースの初期化
-db.create_tables([Event, User])
+db.create_tables([Event, User, EventImage])
 db.pragma("foreign_keys", 1, permanent=True)  # on_deleteを動作させるオプション設定

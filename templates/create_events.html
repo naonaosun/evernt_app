@@ -8,7 +8,7 @@
 <body>
     <h1>イベント登録</h1>
     <!-- フォームの作成 -->
-    <form method="POST" action="{{ url_for('create_events') }}">
+    <form method="POST" action="{{ url_for('create_events') }}" enctype="multipart/form-data">
         <label for="name">イベント名:</label>
         <input type="text" id="name" name="name" required><br><br>
 
@@ -31,11 +31,15 @@
         <label for="url">URL(無ければ記入しなくても良いです):</label>
         <input type="url" id="url" name="url"><br><br>
         
-        <input type="submit" value="登録">
+        <!-- 画像アップロード用のフォーム -->
+        <label for="image">画像を選択:</label>
+        <input type="file" name="image" id="image" accept="image/*">
+
+        <input type="submit" value="イベントを作成">
     </form>
     <br>
     <a href="{{ url_for('index') }}">イベント一覧を見る</a>
 </body>
 </html>
 
-    
+
