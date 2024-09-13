@@ -21,12 +21,17 @@
             to {{ event.get_end_date() }}
         {% endif %}
     </p> 
-    </p>
-
 <!-- アップロードされた画像の表示 -->
-    {% if event.image %}
-    <img src="{{ url_for('static', filename='uploads/' + event.image) }}" alt="Event Image" width="300">
+        {% if images %}
+            <h2>Event Images</h2>
+            {% for image in images %}
+                <!-- 画像のURLを生成 -->
+                <img src="{{ url_for('static', filename='uploads/' + image.image_path.split('/')[-1]) }}" alt="Event Image" style="max-width: 300px;">
+            {% endfor %}
+        {% else %}
+            <p>No images uploaded for this event.</p>
     {% endif %}
+
     
     <a href="{{ url_for('index') }}">イベント一覧に戻る</a>
 

@@ -11,6 +11,7 @@ from func import user  # user.pyからBlueprintをインポート
 
 # Flaskアプリケーションのインスタンスを作成
 app = Flask(__name__)
+app.config["UPLOAD_FOLDER"] = "static/uploads"   # staticフォルダ内に画像を保存
 app.secret_key = "secret"
 
 # Flask-Loginの初期化
@@ -63,7 +64,8 @@ def create_events():
                 # ファイル名の安全性を確保
                 filename = secure_filename(file.filename)
                 file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
-
+                # スラッシュ形式に変換
+                file_path = file_path.replace("\\", "/")
                 # 画像ファイルを指定のディレクトリに保存
                 file.save(file_path)
 
@@ -81,7 +83,7 @@ def create_events():
                 EventImage.create(
                     event=event, 
                     user=current_user,  # ログイン中のユーザーを取得 
-                    image_path=file_path, 
+                    image_path=file_path,
                     posted_deat=datetime.now()
                 )
 
@@ -112,7 +114,8 @@ def allowed_file(filename):
 def event_detail(event_id):
     # イベントIDに基づいてイベントを取得
     event = Event.get(Event.id == event_id)
-    return render_template("event_detail.html", event=event)
+    images = EventImage.select().where(EventImage.event == event)
+    return render_template("event_detail.html", event=event, images=images)
 
 
 if __name__ == "__main__":

@@ -14,7 +14,6 @@ from peewee import (
 from playhouse.migrate import SqliteMigrator, migrate
 
 
-
 # SQLiteデータベースの設定
 db = SqliteDatabase("db.sqlite")
 db.connect()  # データベースに接続
@@ -52,14 +51,15 @@ class Event(Model):
     image = CharField(null=True)  # 画像ファイル名を保存するフィールド
 
     def get_start_date(self):  # 日付を変換するメソッドを追加
-        return datetime.datetime.fromisoformat(self.start_date).strftime("%Y/%m/%d")
+        return datetime.fromisoformat(self.start_date).strftime("%Y/%m/%d")
 
     def get_end_date(self):  # 日付を変換するメソッドを追加
-        return datetime.datetime.fromisoformat(self.end_date).strftime("%Y/%m/%d")
+        return datetime.fromisoformat(self.end_date).strftime("%Y/%m/%d")
 
     class Meta:
         database = db
         table_name = "events"
+
 
 
 class EventImage(Model):
