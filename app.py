@@ -11,7 +11,7 @@ from func import user  # user.pyからBlueprintをインポート
 
 # Flaskアプリケーションのインスタンスを作成
 app = Flask(__name__)
-app.config["UPLOAD_FOLDER"] = "static/uploads"   # staticフォルダ内に画像を保存
+app.config["UPLOAD_FOLDER"] = "static/uploads"  # staticフォルダ内に画像を保存
 app.secret_key = "secret"
 
 # Flask-Loginの初期化
@@ -81,10 +81,10 @@ def create_events():
                 )
 
                 EventImage.create(
-                    event=event, 
-                    user=current_user,  # ログイン中のユーザーを取得 
+                    event=event,
+                    user=current_user,  # ログイン中のユーザーを取得
                     image_path=file_path,
-                    posted_deat=datetime.now()
+                    posted_deat=datetime.now(),
                 )
 
                 flash("イベントの登録が完了しました！")  # 登録完了メッセージをflash
@@ -110,7 +110,7 @@ def allowed_file(filename):
 
 
 # イベント詳細ページのルート
-@app.route("/event/<int:event_id>")
+@app.route("/event/<int:event_id>", methods=["GET", "POST"])
 def event_detail(event_id):
     # イベントIDに基づいてイベントを取得
     event = Event.get(Event.id == event_id)
@@ -118,7 +118,43 @@ def event_detail(event_id):
     return render_template("event_detail.html", event=event, images=images)
 
 
+# イベント画像の新規投稿ルート
+@app.route("/event/<int:event_id>/postimage", methods=["GET", "POST"])
+@login_required
+def post_image(event_id):
+    # イベントIDに基づいてイベントを取得
+    event = Event.get(Event.id == event_id)
+    images = EventImage.select().where(EventImage.event == event)
+
+    if request.method == "POST":
+        # ファイルのアップロード処理
+        if "image" in request.files:
+            file = request.files["image"]
+            if file and allowed_file(file.filename):
+                # ファイル名の安全性を確保
+                filename = secure_filename(file.filename)
+                file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+                # スラッシュ形式に変換
+                file_path = file_path.replace("\\", "/")
+                # 画像ファイルを指定のディレクトリに保存
+                file.save(file_path)
+
+                # データベースにイベントを保存
+                EventImage.create(
+                    event=event,
+                    user=current_user,  
+                    image_path=file_path,
+                    posted_date=datetime.now(),
+                )
+
+                flash("画像の登録が完了しました！")  # 登録完了メッセージをflash
+                # リダイレクト先に event_id を渡す
+                return redirect(url_for("event_detail", event_id=event_id))
+            else:
+                flash("画像のアップロードに失敗しました。対応する形式のファイルを選択してください。")
+
+    return render_template("post_image.html", event=event, images=images)
+
+
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=8000, debug=True)
-
-

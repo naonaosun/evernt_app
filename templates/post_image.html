@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>画像のアップロード</title>
+</head>
+<body>
+    <h1>{{ event.name }}の画像を投稿</h1>
+    <form action="{{ url_for('post_image', event_id=event.id) }}" method="POST" enctype="multipart/form-data">
+        <input type="file" name="image" id="image" accept="image/*">
+        <button type="submit">投稿</button>
+    </form>
+    
+    <h2>みんなが{{ event.name }}に投稿している画像</h2>
+    {% for image in images %}
+        <img src="{{ url_for('static', filename='uploads/' + image.image_path.split('/')[-1]) }}" alt="Event Image" style="max-width: 300px;">
+    {% endfor %}
+
+    <a href="{{ url_for('event_detail', event_id=event.id) }}">イベント詳細に戻る</a>
+</body>
+</html>
+
+

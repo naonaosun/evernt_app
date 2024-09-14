@@ -21,9 +21,12 @@
             to {{ event.get_end_date() }}
         {% endif %}
     </p>
+    <a href="{{ url_for('post_image', event_id=event.id) }}">画像の新規登録</a>
 <!-- アップロードされた画像の表示 -->
         {% if images %}
             <h2>Event Images</h2>
+
+
             {% for image in images %}
                 <!-- 画像のURLを生成 -->
                 <img src="{{ url_for('static', filename='uploads/' + image.image_path.split('/')[-1]) }}" alt="Event Image" style="max-width: 300px;">
@@ -32,14 +35,7 @@
             <p>No images uploaded for this event.</p>
     {% endif %}
 
-    <!-- 画像アップロードフォーム -->
-    <h2>画像を新規投稿</h2>
-    <form action="{{ url_for('event_detail', event_id=event.id) }}" method="POST" enctype="multipart/form-data">
-        <label for="image">画像を選択:</label>
-        <input type="file" id="image" name="image" accept="image/*" required>
-        <button type="submit">投稿</button>
-    </form>
-
+    
 
     
     <a href="{{ url_for('index') }}">イベント一覧に戻る</a>
