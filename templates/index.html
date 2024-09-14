@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>イベント一覧</title>
-    
+    <a href="{{ url_for('create_events') }}">イベントを新規登録する</a>
 </head>
 <body>
    <div class="page">
@@ -30,7 +30,7 @@
     {% endif %}
 
     <h2>イベント一覧</h2>
-    <a href="{{ url_for('create_events') }}">イベントを新規登録する</a>
+    
     <ul>
         {% for event in events %}
         <li>
