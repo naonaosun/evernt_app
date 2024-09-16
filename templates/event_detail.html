@@ -4,41 +4,162 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ event.name }}の詳細</title>
+    <style>
+        /* フォントと全体レイアウト */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #4CAF50;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 1.2em;
+            line-height: 1.6;
+        }
+
+        strong {
+            color: #333;
+        }
+
+        a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* ボタンのスタイル */
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #45a049;
+        }
+
+        /* イベント画像のスタイル */
+        .event-image {
+            display: block;
+            margin: 20px auto;
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .event-images {
+            text-align: center;
+        }
+
+        .event-images img {
+            margin: 10px;
+            max-width: 300px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .no-images {
+            text-align: center;
+            font-size: 1.2em;
+            color: #999;
+        }
+
+        /* 日付情報のスタイル */
+        .date-info {
+            font-size: 1.1em;
+            color: #666;
+        }
+
+        /* カード型レイアウト */
+        .card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        /* レスポンシブ対応 */
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            p {
+                font-size: 1em;
+            }
+
+            .event-images img {
+                max-width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>{{ event.name }}の詳細</h1>
-    <p><strong>紹介:</strong> {{ event.content }}</p>
+    <div class="container">
+        <h1>{{ event.name }}の詳細</h1>
+        <div class="card">
+            <p><strong>紹介:</strong> {{ event.content }}</p>
+            <p><strong>場所:</strong> {{ event.place }}</p>
+            <p><strong>住所:</strong> {{ event.address }}</p>
+            <p><strong>URL:</strong> <a href="{{ event.url }}">{{ event.url }}</a></p>
 
-    <p><strong>場所:</strong> {{ event.place }}</p>
-    <p><strong>住所:</strong> {{ event.address }}</p>
-    <p><strong>URL:</strong> <a href="{{ event.url }}">{{ event.url }}</a></p>
-    
-    <p>
-        {% if event.start_date is not none %}
-            {{ event.get_start_date() }}
-        {% endif %}
-        {% if event.end_date is not none %}
-            to {{ event.get_end_date() }}
-        {% endif %}
-    </p>
-    <a href="{{ url_for('post_image', event_id=event.id) }}">画像の新規登録</a>
-<!-- アップロードされた画像の表示 -->
+            <p class="date-info">
+                {% if event.start_date is not none %}
+                    {{ event.get_start_date() }}
+                {% endif %}
+                {% if event.end_date is not none %}
+                    to {{ event.get_end_date() }}
+                {% endif %}
+            </p>
+        </div>
+
+        <a href="{{ url_for('post_image', event_id=event.id) }}" class="button">画像の新規登録</a>
+
+        <!-- アップロードされた画像の表示 -->
         {% if images %}
-            <h2>Event Images</h2>
-
-
-            {% for image in images %}
-                <!-- 画像のURLを生成 -->
-                <img src="{{ url_for('static', filename='uploads/' + image.image_path.split('/')[-1]) }}" alt="Event Image" style="max-width: 300px;">
-            {% endfor %}
+            <div class="event-images">
+                <h2>Event Images</h2>
+                {% for image in images %}
+                    <!-- 画像のURLを生成 -->
+                    <img src="{{ url_for('static', filename='uploads/' + image.image_path.split('/')[-1]) }}" alt="Event Image" class="event-image">
+                {% endfor %}
+            </div>
         {% else %}
-            <p>No images uploaded for this event.</p>
-    {% endif %}
+            <p class="no-images">No images uploaded for this event.</p>
+        {% endif %}
 
-    
-
-    
-    <a href="{{ url_for('index') }}">イベント一覧に戻る</a>
-
+        <a href="{{ url_for('index') }}" class="button">イベント一覧に戻る</a>
+    </div>
 </body>
 </html>

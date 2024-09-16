@@ -111,7 +111,7 @@
 
 <body>
     <div class="page">
-        <h1><a href="{{ url_for('index') }}">どこいこ(仮)アプリ</a></h1>
+        <h1>どこいこ(仮)</h1>
         <div class="metanav">
             {% if not current_user.is_authenticated %}
                 <a href="{{ url_for('user_bp.login') }}">LogIn</a>
@@ -126,9 +126,9 @@
         {% endfor %}
 
         {% if current_user.is_authenticated %}
-            <p>{{ current_user.name }} さんこんにちは</p>
+            <p style="font-size: 0.9em;">{{ current_user.name }} さんこんにちは</p>
         {% else %}
-            <p>ログインしていません</p>
+            <p style="font-size: 0.9em;">ログインしていません</p>
         {% endif %}
 
         <h2>イベント一覧</h2>
