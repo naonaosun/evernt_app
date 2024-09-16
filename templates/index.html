@@ -100,6 +100,12 @@
             background-color: #45a049;
         }
 
+        /* イベント名のスタイルを変更 */
+        .event-name {
+            font-size: 1.8em; /* フォントサイズを大きく */
+            font-weight: bold; /* ボールドに */
+            color: #333; /* 色を少し濃く */
+        }
     </style>
 </head>
 
@@ -130,12 +136,18 @@
         <ul>
             {% for event in events %}
             <li>
-                <a href="{{ url_for('event_detail', event_id=event.id) }}">{{ event.name }}</a>
-                <p>{{ event.content }}</p>
-                <p>{{ event.start_date }} - {{ event.end_date }}</p>
-                <p>{{ event.place }} - {{ event.address }}</p>
+                <!-- イベント名にクラスを追加 -->
+                <a href="{{ url_for('event_detail', event_id=event.id) }}" class="event-name">{{ event.name }}</a>
+                {% if event.content %}
+                    <p style="font-size: 0.9em;">{{ event.content.split('。')[:2] | join('。') }}。</p>
+                {% else %}
+                    <!-- <p>コンテンツがありません</p> -->
+            {% endif %}
+                <p>日時 : {{ event.start_date }} - {{ event.end_date }}</p>
+                <p>場所 : {{ event.place }}</p>
+                <p>住所 : {{ event.address }}</p>
                 {% if event.url %}
-                    <a href="{{ event.url }}" target="_blank">リンク</a>
+                    <a href="{{ event.url }}" target="_blank">WEBページ</a>
                 {% endif %}
             </li>
             {% endfor %}
@@ -144,4 +156,5 @@
 </body>
 
 </html>
+
 
