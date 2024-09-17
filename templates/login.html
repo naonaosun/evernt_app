@@ -3,12 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
     <title>MessageBOX</title>
+    <style>
+        /* 全体のスタイル設定 */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .page {
+            width: 80%;
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #4CAF50;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .metanav {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+
+        .metanav a {
+            color: #555;
+            text-decoration: none;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #eee;
+            transition: background-color 0.3s;
+        }
+
+        .metanav a:hover {
+            background-color: #4CAF50;
+            color: #fff;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="email"],
+        input[type="password"] {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        input[type="submit"] {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        p {
+            font-size: 1.2em;
+            line-height: 1.6;
+            color: #333;
+        }
+    </style>
 </head>
 <body>
     <div class="page">
-        <h1><a href="{{ url_for('index') }}">どこいこ(仮)アプリ</a></h1>
+        <h1>どこいこ(仮)</h1>
         <div class="metanav">
             {% if not current_user.is_authenticated %}
                 <a href="{{ url_for('user_bp.login') }}">LogIn</a>
@@ -18,21 +118,21 @@
             {% endif %}
         </div>
 
-    {% for message in get_flashed_messages() %}
-        <p>{{ message }}</p>
-    {% endfor %}
+        {% for message in get_flashed_messages() %}
+            <p>{{ message }}</p>
+        {% endfor %}
 
-    <h2>LogIn</h2>
-    <form action="" method="post">
-        <label for="email">Email:</label>
-        <br>
-        <input type="email" name="email" id="email">
-        <br>
-        <label for="password">Password:</label>
-        <br>
-        <input type="password" name="password" id="password">
-        <br>
-        <input type="submit" value="Login">
-    </form>
+        <h2>LogIn</h2>
+        <form action="" method="post">
+            <label for="email">Email:</label>
+            <input type="email" name="email" id="email">
+
+            <label for="password">Password:</label>
+            <input type="password" name="password" id="password">
+
+            <input type="submit" value="Login">
+        </form>
+    </div>
 </body>
 </html>
+
