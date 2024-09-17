@@ -145,7 +145,7 @@
         </div>
 
         <a href="{{ url_for('post_image', event_id=event.id) }}" class="button">画像の新規登録</a>
-
+        <a href="{{ url_for('index') }}" class="button">イベント一覧に戻る</a>
         <!-- アップロードされた画像の表示 -->
         {% if images %}
             <div class="event-images">

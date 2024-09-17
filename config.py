@@ -51,10 +51,20 @@ class Event(Model):
     image = CharField(null=True)  # 画像ファイル名を保存するフィールド
 
     def get_start_date(self):  # 日付を変換するメソッドを追加
-        return datetime.fromisoformat(self.start_date).strftime("%Y/%m/%d")
+        if self.start_date:
+            if isinstance(self.start_date, str):
+                # 文字列からdatetimeに変換
+                self.start_date = datetime.fromisoformat(self.start_date)
+            return self.start_date.strftime("%Y/%m/%d")
+        return "未設定"
 
     def get_end_date(self):  # 日付を変換するメソッドを追加
-        return datetime.fromisoformat(self.end_date).strftime("%Y/%m/%d")
+        if self.end_date:
+            if isinstance(self.end_date, str):
+                # 文字列からdatetimeに変換
+                self.end_date = datetime.fromisoformat(self.end_date)
+            return self.end_date.strftime("%Y/%m/%d")
+        return "未設定"
 
     class Meta:
         database = db

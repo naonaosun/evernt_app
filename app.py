@@ -1,6 +1,6 @@
 from flask import Flask, flash, render_template, request, redirect, url_for
 from flask_login import LoginManager, current_user, login_required, login_user, logout_user
-from peewee import SqliteDatabase, Model, CharField, DateTimeField
+from peewee import SqliteDatabase, Model, CharField, DateTimeField, fn
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from config import Event, User, EventImage
@@ -39,10 +39,30 @@ app.register_blueprint(user.app, url_prefix="/user")
 
 
 # イベント一覧ページのルート
+from datetime import datetime
+
 @app.route("/", methods=["GET", "POST"])
-def index():  # データベースからすべてのイベントを取得
+def index():
+    start_date = request.args.get('start_date')
+    end_date = request.args.get('end_date')
+    specific_date = request.args.get('specific_date')
+    
     events = Event.select()
+
+    if specific_date:
+        specific_date = datetime.strptime(specific_date, "%Y-%m-%d").date()
+        events = events.where(
+            (Event.start_date <= specific_date) & (Event.end_date >= specific_date)
+        )
+    elif start_date and end_date:
+        start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
+        end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
+        events = events.where(
+            (Event.start_date >= start_date) & (Event.end_date <= end_date)
+        )
+
     return render_template("index.html", events=events)
+
 
 
 # イベント登録ページのルート
@@ -52,11 +72,19 @@ def create_events():
     if request.method == "POST":  # フォームから送信されたデータを取得
         name = request.form["name"]
         content = request.form["content"]
-        start_date = request.form["start_date"]
-        end_date = request.form["end_date"]
+        
+        # 日付形式に変換
+        start_date_str = request.form["start_date"]
+        end_date_str = request.form["end_date"]
+        
+        # フォームからの文字列を日付型に変換
+        start_date = datetime.strptime(start_date_str, "%Y-%m-%d")
+        end_date = datetime.strptime(end_date_str, "%Y-%m-%d")
+        
         place = request.form["place"]
         address = request.form["address"]
         url = request.form.get("url", "")
+
         # ファイルのアップロード処理
         if "image" in request.files:
             file = request.files["image"]
@@ -94,6 +122,7 @@ def create_events():
                 return redirect(request.url)
 
     return render_template("create_events.html")
+
 
 
 # アップロードされた画像を保存するディレクトリ
@@ -142,7 +171,7 @@ def post_image(event_id):
                 # データベースにイベントを保存
                 EventImage.create(
                     event=event,
-                    user=current_user,  
+                    user=current_user,
                     image_path=file_path,
                     posted_date=datetime.now(),
                 )
