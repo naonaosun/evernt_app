@@ -130,11 +130,7 @@
         <h1>{{ event.name }}の詳細</h1>
         <div class="card">
             <p><strong>紹介:</strong> {{ event.content }}</p>
-            <p><strong>場所:</strong> {{ event.place }}</p>
-            <p><strong>住所:</strong> {{ event.address }}</p>
-            <p><strong>URL:</strong> <a href="{{ event.url }}">{{ event.url }}</a></p>
-
-            <p class="date-info">
+                        <p class="date-info"><strong>開催日:</strong>
                 {% if event.start_date is not none %}
                     {{ event.get_start_date() }}
                 {% endif %}
@@ -142,6 +138,11 @@
                     to {{ event.get_end_date() }}
                 {% endif %}
             </p>
+            <p><strong>場所:</strong> {{ event.place }}</p>
+            <p><strong>住所:</strong> {{ event.address }}</p>
+            <p><strong>URL:</strong> <a href="{{ event.url }}">{{ event.url }}</a></p>
+
+
         </div>
 
         <a href="{{ url_for('post_image', event_id=event.id) }}" class="button">画像の新規登録</a>
