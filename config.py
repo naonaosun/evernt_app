@@ -24,8 +24,8 @@ db.connect()  # データベースに接続
 # # トランザクションを開始してマイグレーションを実行
 # with db.atomic():
 #     migrate(
-#         migrator.add_column('events', 'start_date', DateTimeField(null=True)),
-#         migrator.add_column('events', 'end_date', DateTimeField(null=True))
+#         migrator.add_column('events', 'lat', CharField(null=True)),
+#         migrator.add_column('events', 'lng', CharField(null=True))
 #     )
 
 
@@ -47,6 +47,8 @@ class Event(Model):
     end_date = DateTimeField(null=True)
     place = CharField()
     address = CharField()
+    lat = CharField(null=True)
+    lng = CharField(null=True)
     url = CharField(null=True)
     image = CharField(null=True)  # 画像ファイル名を保存するフィールド
 
@@ -62,6 +64,7 @@ class Event(Model):
         if self.end_date:
             if isinstance(self.end_date, str):
                 # 文字列からdatetimeに変換
+
                 self.end_date = datetime.fromisoformat(self.end_date)
             return self.end_date.strftime("%Y/%m/%d")
         return "未設定"
