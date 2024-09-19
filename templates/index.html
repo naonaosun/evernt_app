@@ -197,7 +197,9 @@
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-         // 抽出されたイベントのマーカーを地図上に追加
+// 抽出されたイベントのマーカーを地図上に追加
+        //  マーカーの自動生成★{% for event in events %} のループを使って、抽出されたイベントの数だけ var markerX = L.marker([lat, lng]).addTo(map); を自動生成する。
+        //  loop.indexを使用して、マーカーごとに異なる変数名（marker1, marker2 など）が割り当てられる。
         {% for event in events %}
             var marker{{ loop.index }} = L.marker([{{ event.lat }}, {{ event.lng }}]).addTo(map);
             marker{{ loop.index }}.bindPopup("<b>{{ event.place }}</b><br>{{ event.name }}").openPopup();
