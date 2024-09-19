@@ -12,6 +12,7 @@ from peewee import (
     DateTimeField,
 )
 from playhouse.migrate import SqliteMigrator, migrate
+from geocoding import get_lat_lng
 
 
 # SQLiteデータベースの設定
@@ -69,10 +70,15 @@ class Event(Model):
             return self.end_date.strftime("%Y/%m/%d")
         return "未設定"
 
+    def save(self, *args, **kwargs):
+        if self.address:
+            # 住所から緯度と経度を取得
+            self.lat, self.lng = get_lat_lng(self.address)
+        super().save(*args, **kwargs)
+
     class Meta:
         database = db
         table_name = "events"
-
 
 
 class EventImage(Model):
