@@ -54,6 +54,7 @@
             {% for event in events %}
             <li>
                 <a href="{{ url_for('event_detail', event_id=event.id) }}" class="event-name">{{ event.name }}</a>
+                <p>紹介 : {{ event.content.split('。')[0] }}。</p>
                 <p>日時 : {{ event.get_start_date() }} - {{ event.get_end_date() }}</p>
                 <p>場所 : {{ event.place }}</p>
                 <p>住所 : {{ event.address }}</p>
