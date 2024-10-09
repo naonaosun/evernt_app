@@ -1,3 +1,5 @@
 .venv
 .env
 events.db
+testmap.py
+test-map.html

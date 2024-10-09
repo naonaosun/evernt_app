@@ -48,10 +48,10 @@ class Event(Model):
     end_date = DateTimeField(null=True)
     place = CharField()
     address = CharField()
-    lat = CharField(null=True)
-    lng = CharField(null=True)
     url = CharField(null=True)
     image = CharField(null=True)  # 画像ファイル名を保存するフィールド
+    lat = CharField(null=True)
+    lng = CharField(null=True)
 
     def get_start_date(self):  # 日付を変換するメソッドを追加
         if self.start_date:
@@ -136,5 +136,5 @@ class EventImage(Model):
 
 
 # データベースの初期化
-db.create_tables([Event, User, EventImage])
+db.create_tables([Event, User, EventImage], safe=True)
 db.pragma("foreign_keys", 1, permanent=True)  # on_deleteを動作させるオプション設定

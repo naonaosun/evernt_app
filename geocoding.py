@@ -5,7 +5,7 @@ import xmltodict
 
 # response = requests.get(f"https://www.geocoding.jp/api/?q={address}")
 
-# # ★このAPIからAPIから返されるデータはXML形式なため、response.textにしているが、これをそのまま使うとただの文字列のため要素を簡単に取り出せない▶辞書型に変更する必要があり、するとrezultという要素もできる！
+# # ★このAPIから返されるデータはXML形式なため、response.textにしているが、これをそのまま使うとただの文字列のため要素を簡単に取り出せない▶辞書型に変更する必要があり、するとrezultという要素もできる！
 # # XMLを辞書型に変換///
 # data_dict = xmltodict.parse(response.text)
 
